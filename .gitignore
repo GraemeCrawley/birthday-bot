@@ -1,0 +1,31 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Your data: never commit real birthdays
+data/*
+!data/.gitkeep
+*.xlsx
+*.xls
+*.csv
+!samples/*.csv
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+*.sql.gz
+*.dump
+backups/
+backup-*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# OS junk
+.DS_Store
+._*

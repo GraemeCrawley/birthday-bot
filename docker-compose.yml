@@ -1,0 +1,81 @@
+# Birthday Bot — everything runs on your own machine.
+#
+#   db   : PostgreSQL database (your birthdays live here, in a Docker volume)
+#   api  : web app + API on http://localhost:${API_PORT:-8000}
+#   bot  : Telegram bot that talks to the api
+#
+# Settings come from the .env file next to this one (copy .env.example).
+
+name: birthday-bot
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-birthday}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: ${POSTGRES_DB:-birthday}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-birthday}:${POSTGRES_PASSWORD:-change-me}@db:5432/${POSTGRES_DB:-birthday}
+      TZ: ${TZ:-UTC}
+      # Optional extras (email / browser push). Leave blank to disable.
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_CLAIMS_EMAIL: ${VAPID_CLAIMS_EMAIL:-}
+    ports:
+      # The web app has NO login. By default it is only reachable from this
+      # computer (127.0.0.1). See README "Opening the web app from your phone".
+      - "${API_BIND:-127.0.0.1}:${API_PORT:-8000}:8000"
+    volumes:
+      # Read-only, so the import script and your CSV file are reachable
+      # inside the container (see README "Adding birthdays").
+      - ./scripts:/scripts:ro
+      - ./samples:/samples:ro
+      - ./data:/data:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 10
+      start_period: 10s
+
+  bot:
+    build: ./bot
+    restart: unless-stopped
+    environment:
+      BIRTHDAY_BOT_TOKEN: ${BIRTHDAY_BOT_TOKEN:?Set BIRTHDAY_BOT_TOKEN in .env (see README)}
+      BIRTHDAY_BOT_CHAT_ID: ${BIRTHDAY_BOT_CHAT_ID:?Set BIRTHDAY_BOT_CHAT_ID in .env (see README)}
+      BIRTHDAY_REMINDER_URL: http://api:8000
+      WEB_APP_URL: ${WEB_APP_URL:-http://localhost:8000}
+      TZ: ${TZ:-UTC}
+      DAILY_CHECK_HOUR: ${DAILY_CHECK_HOUR:-9}
+      DAILY_CHECK_MINUTE: ${DAILY_CHECK_MINUTE:-0}
+      # Optional: Healthchecks.io monitoring. Blank = off.
+      HEALTHCHECKS_API_KEY: ${HEALTHCHECKS_API_KEY:-}
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  db-data:
