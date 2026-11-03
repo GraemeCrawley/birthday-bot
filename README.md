@@ -9,6 +9,41 @@ A private birthday reminder that lives in Telegram (a free chat app, like WhatsA
 
 It runs with Docker, a free tool that runs ready-made software packages ("containers") with one command. You don't need to know how to program.
 
+## Screenshots
+
+All names below are the made-up people from `samples/sample-birthdays.csv`.
+
+**Upcoming birthdays**, soonest first, with the age they're turning:
+
+![Upcoming birthdays list](docs/screenshots/desktop-dashboard.png)
+
+**People**, with notes and how many gift ideas each person has:
+
+![People list](docs/screenshots/desktop-people.png)
+
+**Gift ideas for one person.** Tick an idea once you've bought it:
+
+![Gift ideas for one person](docs/screenshots/desktop-gifts.png)
+
+**Adding a person:**
+
+![Add person form](docs/screenshots/desktop-add-person.png)
+
+**On a phone:**
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/phone-dashboard.png" alt="Upcoming birthdays on a phone" width="260"></td>
+    <td><img src="docs/screenshots/phone-gifts.png" alt="Gift ideas on a phone" width="260"></td>
+    <td><img src="docs/screenshots/phone-add-person.png" alt="Add person form on a phone" width="260"></td>
+  </tr>
+  <tr>
+    <td align="center">Upcoming birthdays</td>
+    <td align="center">Gift ideas</td>
+    <td align="center">Add a person</td>
+  </tr>
+</table>
+
 ---
 
 ## What you need
