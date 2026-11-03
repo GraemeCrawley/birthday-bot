@@ -44,6 +44,25 @@ All names below are the made-up people from `samples/sample-birthdays.csv`.
   </tr>
 </table>
 
+### In Telegram
+
+These are mockups of the bot's real messages and buttons (the text comes from the code in `bot/`), filled with the sample people and dated as if today were October 31.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/telegram-menu.png" alt="Bot main menu in Telegram" width="200"></td>
+    <td><img src="docs/screenshots/telegram-upcoming.png" alt="Upcoming birthdays in Telegram" width="200"></td>
+    <td><img src="docs/screenshots/telegram-person.png" alt="One person's gift ideas in Telegram" width="200"></td>
+    <td><img src="docs/screenshots/telegram-search.png" alt="Search by typing in Telegram" width="200"></td>
+  </tr>
+  <tr>
+    <td align="center">Main menu</td>
+    <td align="center">Upcoming birthdays</td>
+    <td align="center">A person and their gift ideas</td>
+    <td align="center">Search by typing</td>
+  </tr>
+</table>
+
 ---
 
 ## What you need
